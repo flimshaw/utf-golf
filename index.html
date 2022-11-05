@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>UTF Golf</title>
+    <style>
+      .card {
+        font-size: 5em;
+        display: inline-block;
+      }
+      .red {
+        color: #c00;
+      }
+    </style>
+    <script type='text/javascript'>
+      window.onload = function() {
+
+        const el = document.getElementById('app');
+        // A=spades, B=hearts, C=diamonds, D=clubs
+        const CARD_START = 0x1F0A1;
+
+        // create a set of card values
+        const cards = new Array(52);
+        for(let i = 0; i < 13; i++) {
+          v = i > 10 ? i+1:i; // skip the "knight" card :/
+          cards[i] = CARD_START + v;
+          cards[i+13] = CARD_START + v + 16;
+          cards[i+26] = CARD_START + v + 32;
+          cards[i+39] = CARD_START + v + 48;
+        }
+
+        // create a deck of cards w/ values, suits
+        const deck = cards.map(c => {
+          let d = document.createElement('div');
+          d.innerHTML = String.fromCodePoint(c);
+          d.classList.add('card');
+
+          // suits
+          let s = ((c&0xf0)>>4)-0xA
+          d.setAttribute('data-suit', s);
+          if(s == 1 || s == 2) d.classList.add('red');
+
+          // hack to adjust for the knight card
+          let v = (c&0x0f);
+          v = v > 11 ? v-1:v;
+          d.setAttribute('data-value', v);
+          return d;
+        });
+
+        // shuffle
+        deck.sort(() => Math.random() - .5);
+
+        // add all cards to the dom
+        deck.map(c => el.append(c));
+
+        // handle clicks
+        el.addEventListener('click', (evt) => {
+          let t = evt.target;
+          // handle card clicks
+          if(t.classList.contains('card')) {
+            console.log(t.getAttribute('data-value'));
+          }
+        })
+
+      }
+    </script>
+  </head>
+  <body>
+    <h1>UTF Golf</h1>
+    <div id="app" />
+  </body>
+</html>
