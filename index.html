@@ -3,36 +3,29 @@
   <head>
     <meta charset="utf-8">
     <title>UTF Golf</title>
-    <style>
-      .card {
-        font-size: 5em;
-        display: inline-block;
-      }
-      .red {
-        color: #c00;
-      }
-    </style>
+    <link rel="stylesheet" href="./styles.css" />
     <script type='text/javascript'>
       window.onload = function() {
 
         const el = document.getElementById('app');
+
         // A=spades, B=hearts, C=diamonds, D=clubs
         const CARD_START = 0x1F0A1;
 
         // create a set of card values
         const cards = new Array(52);
         for(let i = 0; i < 13; i++) {
-          v = i > 10 ? i+1:i; // skip the "knight" card :/
+          v = i > 10 ? i+1 : i;   // skip the "knight" card
           cards[i] = CARD_START + v;
           cards[i+13] = CARD_START + v + 16;
           cards[i+26] = CARD_START + v + 32;
           cards[i+39] = CARD_START + v + 48;
         }
 
-        // create a deck of cards w/ values, suits
+        // create a deck of card divs w/ values, suits
         const deck = cards.map(c => {
           let d = document.createElement('div');
-          d.innerHTML = String.fromCodePoint(c);
+          d.setAttribute('data-char', String.fromCodePoint(c));
           d.classList.add('card');
 
           // suits
@@ -44,21 +37,67 @@
           let v = (c&0x0f);
           v = v > 11 ? v-1:v;
           d.setAttribute('data-value', v);
+
           return d;
         });
 
         // shuffle
         deck.sort(() => Math.random() - .5);
 
-        // add all cards to the dom
-        deck.map(c => el.append(c));
+        // create a tableau
+        const tab = document.createElement('div');
+        tab.classList.add('tableau');
+        el.appendChild(tab);
+
+        // deal 7 columns of 5 cards each
+        for(i = 0; i < 7; i++) {
+          let c = document.createElement('div');
+          c.classList.add('column');
+          for(j = 0; j < 5; j++) {
+            let card = deck.pop();
+            card.style.zIndex = j;
+            c.appendChild(card);
+          }
+          tab.appendChild(c);
+        }
+
+        // place the rest of the hand below
+        const hand = document.createElement('div');
+        hand.setAttribute('data-char', String.fromCodePoint(0x1F0A0));
+        hand.classList.add('card');
+        hand.classList.add('hand');
+        el.appendChild(hand);
+
+        // the talon
+        const talon = document.createElement('div');
+        talon.classList.add('talon');
+        talon.setAttribute('data-value', 0);
+        el.appendChild(talon);
 
         // handle clicks
         el.addEventListener('click', (evt) => {
           let t = evt.target;
+          
           // handle card clicks
           if(t.classList.contains('card')) {
-            console.log(t.getAttribute('data-value'));
+
+            if(!deck.length) return;
+
+            if(t.classList.contains('hand')) {
+              let nc = deck.pop();
+              if(!deck.length) hand.setAttribute('data-char', ' ');
+              talon.innerHTML = "";
+              talon.appendChild(nc);
+              talon.setAttribute('data-value', nc.getAttribute('data-value'));
+            } else {
+              // check talon value
+              let diff = Math.abs(t.getAttribute('data-value') - talon.getAttribute('data-value'));
+              if(diff == 1 || talon.getAttribute('data-value') == 0) {
+                talon.innerHTML = "";
+                talon.appendChild(t);
+                talon.setAttribute('data-value', t.getAttribute('data-value'));
+              }
+            }
           }
         })
 
@@ -66,7 +105,10 @@
     </script>
   </head>
   <body>
-    <h1>UTF Golf</h1>
+    <header>
+    <h1>Unicode Golf Solitaire</h1>
+    <p>by <a href="https://flimshaw.net/">flimshaw</a></p>
+    </header>
     <div id="app" />
   </body>
 </html>
