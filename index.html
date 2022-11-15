@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html translate="no">
   <head>
     <meta charset="utf-8">
-    <title>UTF Golf</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unicode Golf Solitaire</title>
     <link rel="stylesheet" href="./styles.css" />
     <script type='text/javascript'>
       window.onload = function() {
@@ -77,7 +78,7 @@
         // deals a card from your hand
         function dealHandCard() {
           let nc = deck.pop();
-          if(!deck.length) hand.setAttribute('data-char', ' ');
+          if(!deck.length) hand.remove();
           talon.innerHTML = "";
           talon.appendChild(nc);
           talon.setAttribute('data-value', nc.getAttribute('data-value'));
@@ -85,34 +86,41 @@
 
         dealHandCard();
 
-        // handle clicks
+        // handle all clicks
         el.addEventListener('click', (evt) => {
           let t = evt.target;
 
           // handle card clicks
           if(t.classList.contains('card')) {
 
-            if(!deck.length) return;
-
             if(t.classList.contains('hand')) {
+              if(!deck.length) return;
               dealHandCard();
             } else {
-              // check talon value
-              let diff = Math.abs(t.getAttribute('data-value') - talon.getAttribute('data-value'));
-              if(diff == 1 || talon.getAttribute('data-value') == 0) {
+              // only the lowest card is clickable
+              const pc = t.parentElement.children;
+              if(pc.item(pc.length-1) !== t) return;
+
+              // check card value against talon
+              const tv = talon.getAttribute('data-value');
+              const cv = t.getAttribute('data-value');
+              if(tv == 13) return; // can't play on a king
+              let diff = Math.abs(cv - tv);
+              if(diff == 1 || tv == 0) {
                 talon.innerHTML = "";
                 talon.appendChild(t);
-                talon.setAttribute('data-value', t.getAttribute('data-value'));
+                talon.setAttribute('data-value', cv);
               }
             }
           }
+
         })
       }
     </script>
   </head>
   <body>
     <header>
-    <h1>⛳️ Golf Solitaire</h1>
+      <h1>⛳️ Unicode Golf Solitaire</h1>
     </header>
     <div id="app" />
   </body>

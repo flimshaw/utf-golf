@@ -1,6 +1,13 @@
+body {
+  background: #bbb;
+  font-family: monospace;
+  padding: 0 25px;
+  color: #333;
+}
 #app {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 .card {
   font-size: 159px;
@@ -15,7 +22,7 @@
 .card::before {
   content: attr(data-char);
   position: absolute;
-  background-color: #f9f9f9;
+  background-color: #e0e0e0;
   left: -8px;
   top: -38px;
 }
@@ -30,10 +37,10 @@
 .hand, .talon {
   position: absolute;
   bottom: 100px;
-  left: 10px;
+  left: 32px;
 }
 .talon {
-  left: 116px;
+  left: 155px;
 }
 .tableau {
   position: relative;
@@ -45,5 +52,5 @@
   align-items: flex-start;
 }
 .red {
-  color: #c00;
+  color: #c33;
 }
