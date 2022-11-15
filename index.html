@@ -33,7 +33,7 @@
           d.setAttribute('data-suit', s);
           if(s == 1 || s == 2) d.classList.add('red');
 
-          // hack to adjust for the knight card
+          // hack to adjust for the knight card (wth?)
           let v = (c&0x0f);
           v = v > 11 ? v-1:v;
           d.setAttribute('data-value', v);
@@ -74,21 +74,28 @@
         talon.setAttribute('data-value', 0);
         el.appendChild(talon);
 
+        // deals a card from your hand
+        function dealHandCard() {
+          let nc = deck.pop();
+          if(!deck.length) hand.setAttribute('data-char', ' ');
+          talon.innerHTML = "";
+          talon.appendChild(nc);
+          talon.setAttribute('data-value', nc.getAttribute('data-value'));
+        }
+
+        dealHandCard();
+
         // handle clicks
         el.addEventListener('click', (evt) => {
           let t = evt.target;
-          
+
           // handle card clicks
           if(t.classList.contains('card')) {
 
             if(!deck.length) return;
 
             if(t.classList.contains('hand')) {
-              let nc = deck.pop();
-              if(!deck.length) hand.setAttribute('data-char', ' ');
-              talon.innerHTML = "";
-              talon.appendChild(nc);
-              talon.setAttribute('data-value', nc.getAttribute('data-value'));
+              dealHandCard();
             } else {
               // check talon value
               let diff = Math.abs(t.getAttribute('data-value') - talon.getAttribute('data-value'));
@@ -100,14 +107,12 @@
             }
           }
         })
-
       }
     </script>
   </head>
   <body>
     <header>
-    <h1>Unicode Golf Solitaire</h1>
-    <p>by <a href="https://flimshaw.net/">flimshaw</a></p>
+    <h1>⛳️ Golf Solitaire</h1>
     </header>
     <div id="app" />
   </body>
