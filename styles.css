@@ -3,11 +3,9 @@ body {
   font-family: monospace;
   padding: 0 25px;
   color: #333;
-}
-#app {
-  width: 100%;
   height: 100%;
-  box-sizing: border-box;
+  background-image: repeating-linear-gradient(-45deg, rgba(255,255,255, 0.25), rgba(255,255,255, 0.25) 1px, transparent 1px, transparent 6px);
+  background-size: 4px 4px;
 }
 .card {
   font-size: 159px;
@@ -22,7 +20,7 @@ body {
 .card::before {
   content: attr(data-char);
   position: absolute;
-  background-color: #e0e0e0;
+  background-color: #e9e9e9;
   left: -8px;
   top: -38px;
 }
@@ -32,7 +30,6 @@ body {
 }
 .column {
   width: 100%;
-  position: relative;
 }
 .hand, .talon {
   position: absolute;
@@ -43,7 +40,6 @@ body {
   left: 155px;
 }
 .tableau {
-  position: relative;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
